@@ -14,7 +14,7 @@ def get_packages():
 
 setup(
     name='nuage',
-    version='1.0',
+    version='1.1',
     author='Jorge Eduardo Cardona',
     author_email='jorgeecardona@gmail.com',
     packages=get_packages(),

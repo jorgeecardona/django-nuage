@@ -11,13 +11,13 @@ from django.conf import settings
 
 class Command(BaseCommand):
 
-    help = 'Deploy an application in nuage infraestructure'
+    help = 'Deploy an application in nuage infrastructure'
 
 #    option_list = BaseCommand.option_list + (
-#        make_option('--username',
+#        make_option('--email',
 #                    action='store',
-#                    dest='username',
-#                    help='username'),
+#                    dest='email',
+#                    help='email'),
 #        )
 
     def handle(self, *args, **options):
@@ -25,7 +25,7 @@ class Command(BaseCommand):
 
         # Name of application.
         application = settings.NUAGE_APPLICATION
-        username = settings.NUAGE_USERNAME
+        email = settings.NUAGE_EMAIL
         key = settings.NUAGE_KEY
 
         # Prepare
@@ -42,7 +42,13 @@ class Command(BaseCommand):
         # Create tar.
         tar = tarfile.open(tempfd.name, mode='w:gz')
 
-        tar.add(dirname, 'tutorial', exclude=lambda f: f.endswith('.pyc'))
+        def exclude_file(name):
+            for ends in ['.pyc', '#', '~']:
+                if name.endswith(ends):
+                    return True
+            return False
+
+        tar.add(dirname, 'tutorial', exclude=exclude_file)
 
         # Write to file.
         tar.close()
@@ -52,10 +58,17 @@ class Command(BaseCommand):
         # SSH or POST ?
         payload = base64.encodestring(tempfd.read())
         data = urllib.urlencode({
-            'username': username,
+            'email': email,
             'key': key,
+            'application': application,
             'payload': payload,
             })
 
-        urllib2.urlopen('http://nuage.aleph.co/deploy',
-                        data=data)
+        # Make request.
+        url = 'http://localhost:8000/deploy'
+        request = urllib2.Request(url, data)
+        try:
+            response = urllib2.urlopen(request)
+            print response.read()
+        except Exception, e:
+            print e
