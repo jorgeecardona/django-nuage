@@ -4,21 +4,14 @@ import tarfile
 import base64
 import urllib
 import urllib2
-from django.core.management.base import BaseCommand, CommandError
-from optparse import make_option
+from django.core.management.base import BaseCommand
+# from optparse import make_option
 from django.conf import settings
 
 
 class Command(BaseCommand):
 
     help = 'Deploy an application in nuage infrastructure'
-
-#    option_list = BaseCommand.option_list + (
-#        make_option('--email',
-#                    action='store',
-#                    dest='email',
-#                    help='email'),
-#        )
 
     def handle(self, *args, **options):
         print "Start deploying."
@@ -27,6 +20,7 @@ class Command(BaseCommand):
         application = settings.NUAGE_APPLICATION
         email = settings.NUAGE_EMAIL
         key = settings.NUAGE_KEY
+        version = settings.NUAGE_VERSION
 
         # Prepare
         print "Prepare application %s." % (application, )
@@ -48,7 +42,7 @@ class Command(BaseCommand):
                     return True
             return False
 
-        tar.add(dirname, 'tutorial', exclude=exclude_file)
+        tar.add(dirname, application, exclude=exclude_file)
 
         # Write to file.
         tar.close()
@@ -61,14 +55,16 @@ class Command(BaseCommand):
             'email': email,
             'key': key,
             'application': application,
+            'version': version,
             'payload': payload,
             })
 
         # Make request.
-        url = 'http://localhost:8000/deploy'
+        url = 'http://www.cenuage.com/upload'
         request = urllib2.Request(url, data)
         try:
             response = urllib2.urlopen(request)
             print response.read()
         except Exception, e:
             print e
+            print e.read()
