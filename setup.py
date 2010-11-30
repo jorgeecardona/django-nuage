@@ -14,7 +14,7 @@ def get_packages():
 
 setup(
     name='nuage',
-    version='1.2',
+    version='1.3',
     description='django sdk for deployment in nuage infrastructure',
     author='Jorge Eduardo Cardona',
     author_email='jorgeecardona@gmail.com',

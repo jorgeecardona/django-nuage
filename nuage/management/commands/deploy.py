@@ -60,7 +60,7 @@ class Command(BaseCommand):
             })
 
         # Make request.
-        url = 'http://www.cenuage.com/upload'
+        url = 'http://test.cenuage.com/upload'
         request = urllib2.Request(url, data)
         try:
             response = urllib2.urlopen(request)
