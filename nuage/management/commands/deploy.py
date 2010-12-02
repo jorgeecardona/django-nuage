@@ -27,7 +27,7 @@ class Command(BaseCommand):
         if hasattr(settings, 'NUAGE_KEY'):
             key = settings.NUAGE_KEY
         else:
-            key = getpass("Please enter your deployment key: "))
+            key = getpass("Please enter your deployment key: ")
 
         # Application's name
         if hasattr(settings, 'NUAGE_APPLICATION'):
@@ -42,17 +42,18 @@ class Command(BaseCommand):
             version = raw_input("Please enter the application's version: ")
 
         # Prepare
-        print "Preparing to deploy in %(version)s.%(application)s.apps.cenuage.com ..." % {
+        print "Preparing to deploy in %(version)s."\
+              "%(application)s.apps.cenuage.com ..." % {
             'version': version,
             'application': application,
-            })
+            }
 
         # Import settings.
         settings_module = __import__(settings.SETTINGS_MODULE)
         dirname = os.path.dirname(settings_module.__file__)
 
         # Start compressing
-        tempfd = tempfile.NamedTemporaryFile(suffix='.tar.gz')
+        tempfd = tempfile.NamedTemporaryFile()
 
         # Create tar.
         tar = tarfile.open(tempfd.name, mode='w:gz')
@@ -67,7 +68,6 @@ class Command(BaseCommand):
 
         # Write to file.
         tar.close()
-        print "Compressed file %s" % (tempfd.name, )
 
         # Send file
         # SSH or POST ?
