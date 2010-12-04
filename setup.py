@@ -16,7 +16,7 @@ fd.close()
 
 setup(
     name='nuage',
-    version='0.2a',
+    version='0.3',
     description='django sdk for deployment in nuage infrastructure',
     author='Jorge Eduardo Cardona',
     author_email='jorge.cardona@cenuage.com',
